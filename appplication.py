@@ -75,10 +75,8 @@ def tobs():
 def by_startdate(start):
     print(start)
     
-    if start is None:
-        dateQry = 1
-    else:
-        dateQry = session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).filter(Measurement.date >=start).order_by(Measurement.date).all()
+    dateQry = session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).filter(Measurement.date >=start).order_by(Measurement.date).all()
+    
     return jsonify(dateQry)
 
 @app.route("/api/v1.0/range/<start>/<end>")
