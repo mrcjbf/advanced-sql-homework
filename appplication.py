@@ -31,7 +31,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def welcome():
-    """List all available api routes."""
+    
     return (
         "Available Routes:<br/>" +
         "/api/v1.0/precipitation<br/>"+
@@ -45,11 +45,9 @@ def welcome():
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
-    """Return a list of all precipitation"""
-    # Query all passengers
+    
     results = session.query(Measurement.date,Measurement.prcp).order_by(Measurement.date).all()
 
-    # Convert list of tuples into normal list
     all_measures = list(np.ravel(results))
 
     return jsonify(all_measures)
@@ -57,49 +55,37 @@ def precipitation():
 
 @app.route("/api/v1.0/stations")
 def stations():
-    """Return a list of all stations"""
-    # Query all passengers
+    
     results = session.query(Station.station).all()
 
-    # Convert list of tuples into normal list
     all_stations = list(np.ravel(results))
 
     return jsonify(all_stations)
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-    """Return a list of all tobs"""
-    # Query all passengers
+    
     results = session.query(Measurement.date,Measurement.tobs).filter(Measurement.date >='2016-08-23').order_by(Measurement.date).all()
 
-    # Convert list of tuples into normal list
     all_tobs = list(np.ravel(results))
 
     return jsonify(all_tobs)
 
 @app.route("/api/v1.0/date/<start>")
-#, defaults={"end":None}
 def by_startdate(start):
     print(start)
-    """Fetch data for date."""
+    
     if start is None:
-       dateQry = 1
-       #dateQry = session.query(Measurement.date,Measurement.tobs).filter(Measurement.date >=start,Measurement.date <=end).order_by(Measurement.date).all()
+        dateQry = 1
     else:
-        #dateQry = 2
         dateQry = session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).filter(Measurement.date >=start).order_by(Measurement.date).all()
     return jsonify(dateQry)
 
 @app.route("/api/v1.0/range/<start>/<end>")
 def by_range(start,end):
     print(start)
-    """Fetch data for date."""
  
     dateQry = session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).filter(Measurement.date >=start,Measurement.date <=end).order_by(Measurement.date).all()
-
-
-
-
 
     return jsonify(dateQry)
 
